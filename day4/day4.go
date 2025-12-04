@@ -27,10 +27,18 @@ func parse() [][]int {
 	return values
 }
 
-func print2DArray(value [][]int) {
-	for _, row := range value {
-		fmt.Println(row)
+func print2DArray(grid [][]int) {
+	for _, row := range grid {
+		for _, value := range row {
+			if value == 0 {
+				fmt.Print(".")
+			} else {
+				fmt.Print("@")
+			}
+		}
+		fmt.Println()
 	}
+	fmt.Println()
 }
 
 func countSurrounding(grid [][]int, x, y int) int {
@@ -68,13 +76,12 @@ func countSurrounding(grid [][]int, x, y int) int {
 func findAccessibleRolls(grid [][]int, tooMany int) int {
 	var accessible = 0
 
-	for y := range len(grid) {
-		for x := range len(grid[0]) {
+	for y := range grid {
+		for x := range y {
 			if grid[y][x] == 0 {
 				continue
 			}
 			if countSurrounding(grid, x, y) < tooMany {
-				fmt.Println("(", x, ",", y, ") is accessible")
 				accessible += 1
 			}
 		}
@@ -83,9 +90,56 @@ func findAccessibleRolls(grid [][]int, tooMany int) int {
 	return accessible
 }
 
+func removeAccessibleRolls(grid [][]int, tooMany int) ([][]int, int) {
+	var accessible = 0
+	var newGrid = make([][]int, len(grid))
+
+	for y := range len(grid) {
+		newGrid[y] = make([]int, len(grid[y]))
+		for x := range len(grid[0]) {
+			if grid[y][x] == 0 {
+				newGrid[y][x] = 0
+				continue
+			}
+			if countSurrounding(grid, x, y) < tooMany {
+				newGrid[y][x] = 0
+				accessible += 1
+			} else {
+				newGrid[y][x] = 1
+			}
+		}
+	}
+
+	return newGrid, accessible
+}
+
+func removeAllPossible(grid [][]int, tooMany int) int {
+	var total = 0
+	var workingGrid, removed = grid, 0
+	for {
+		workingGrid, removed = removeAccessibleRolls(workingGrid, tooMany)
+		fmt.Println("Removed", removed)
+		// print2DArray(workingGrid)
+
+		total += removed
+
+		if removed == 0 {
+			break
+		}
+	}
+
+	return total
+}
+
 func main() {
 	var grid = parse()
+	fmt.Print("Part 1:\n")
 	print2DArray(grid)
 
+	// part 1
 	fmt.Println("Accessible rolls:", findAccessibleRolls(grid, 4))
+
+	// part 2
+	fmt.Print("\n\nPart 2:\n")
+	fmt.Println(removeAllPossible(grid, 4))
 }
