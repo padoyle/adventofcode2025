@@ -106,10 +106,7 @@ func condenseRanges(freshRangesSrc []Range) []Range {
 }
 
 func countAllPossibleFresh(freshRangesSrc []Range) int {
-	fmt.Println("original range count:", len(freshRangesSrc))
-
 	rangesCondensed := condenseRanges(freshRangesSrc)
-	fmt.Println("condensed range count:", len(rangesCondensed))
 
 	total := 0
 	for _, r := range rangesCondensed {
@@ -120,13 +117,9 @@ func countAllPossibleFresh(freshRangesSrc []Range) int {
 
 func main() {
 	var freshRanges, ids = parse()
-	fmt.Println(freshRanges)
-	fmt.Println(ids)
 
 	// part 1
 	fmt.Println("Part 1 - Fresh ingredients:", countFreshIngredients(ids, freshRanges))
-	fmt.Println()
-
 	// part 2
 	fmt.Println("Part 2 - All possible fresh ingredients:", countAllPossibleFresh(freshRanges))
 }
